@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Databricks - Pipeline Editor</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<div class="top-banner">
+	Databricks - Pipeline Editor
+</div>
+
+<body>
+	<script>var select_options = {{ select_options| safe}};</script>
+	<div class="left-panel">
+		<ul>
+		<li><button onclick="addBox(select_options=select_options)">Add Box</button></li>
+		<li><button id="connect-button">Connect</button></li>
+		<li><button onclick="addLine()">Add Line</button></li>
+		<li><label for="job-name">Job Name:</label>  <input type="text" id="job-name" name="job-name", value="Ryan_Test_Job"></li>
+		<li><label for="job-name">Target Database:</label>  <input type="text" id="target-database" name="target-database", value="rac_demo_db"></li>
+		<li><label for="working-dir">Directory:</label>  <input type="text" id="working-dir" name="working-dir" value="/Users/ryan.chynoweth@databricks.com/DLT_Pipelines/"></li>
+		<li><button id="execute-button" onclick="executePipeline()">Create Pipeline</button></li>
+		<li><button id="execute-button" onclick="updatePipeline()">Update Pipeline</button></li>
+		</ul>
+	</div>
+
+	<div class="content" id="content"></div>
+
+</body>
+
+</html>

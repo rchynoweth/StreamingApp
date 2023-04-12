@@ -1,0 +1,14 @@
+FileSourceConnect.read_file_stream - Example Input
+- datasetName: file_stream
+- input_path: /databricks-datasets/retail-org/sales_orders/
+- file_type: json
+
+
+DeltaLakeConnect.read_stream_delta_table - Example Input
+- dataset_name: delta_stream
+- table_name: rac_demo_db.bronze_iot
+
+
+SQL Transform
+
+select * from live.delta_stream
