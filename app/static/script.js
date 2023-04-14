@@ -11,6 +11,31 @@ var lineStartX = 0;
 var lineStartY = 0;
 var dragging = false;
 
+// cloud drop down options
+function addDropdownEventListener() {
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get a reference to the drop-down menu element
+    var dropdownMenu = document.getElementById("cloud-dropdown-menu");
+    // Add an event listener for the "change" event
+    dropdownMenu.addEventListener("change", function () {
+        // Get the selected value from the drop-down menu
+        var selectedValue = dropdownMenu.value;
+        fetch('/update_cloud', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'cloud': selectedValue })
+            });
+        });
+    });
+
+
+}
+
+// Call the function to attach the event listener to the drop-down menu
+addDropdownEventListener();
+
 
 // Function to end dragging of the box
 function endDrag(event) {
@@ -146,25 +171,10 @@ function addTextBox(label) {
     return div;
 }
 
-function executePipeline() {
-    // require('dotenv').config();
+function createPipeline() {
 
     var data = getPipelineData()
     console.log(data)
-    const jobName = data[data.length - 1][0].value
-    const targetDatabase = data[data.length - 1][1].value
-    const workingDir = data[data.length - 1][2].value
-
-    json_data = {
-        'job_name': jobName,
-        'target_database': targetDatabase,
-        'working_directory': workingDir,
-        'boxes': []
-    }
-
-    for (var i = 0; i<data.length-1; i++) {
-        json_data.boxes.push(data[i])
-    }
 
 
     fetch('/create_pipeline', {
@@ -172,7 +182,49 @@ function executePipeline() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(json_data)
+        body: JSON.stringify(data)
+    });
+}
+
+function updatePipeline() {
+    var data = getPipelineData()
+    console.log(data)
+
+
+    fetch('/update_pipeline', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+}
+
+function deletePipeline() {
+    var data = getPipelineData()
+    console.log(data)
+
+
+    fetch('/start_pipeline', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+}
+
+function startPipeline() {
+    var data = getPipelineData()
+    console.log(data)
+
+
+    fetch('/start_pipeline', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     });
 }
 
@@ -210,7 +262,18 @@ function getPipelineData() {
     var textBoxes = document.querySelectorAll('.left-panel input[type="text"]');
     data.push(textBoxes)
 
-    return data;
+    json_data = {
+        'job_name': data[data.length - 1][0].value,
+        'target_database': data[data.length - 1][1].value,
+        'working_directory': data[data.length - 1][2].value,
+        'boxes': []
+    }
+
+    for (var i = 0; i < data.length - 1; i++) {
+        json_data.boxes.push(data[i])
+    }
+
+    return json_data;
 }
 
 function getSelectedObject(selectedOptions, selectedOption) {
