@@ -12,7 +12,7 @@ This repository is a demo example of how to build a streaming platform and drag 
 
 
 <br></br>
-The drag and drop UI generates a notebook that is deployed on Databricks. Users can make custom edits to the notebook outside of the drag and drop UI. Please see the example notebook [here](./docs/sample_pipeline.py). 
+The drag and drop UI generates a notebook that is deployed on Databricks. Users can make custom edits to the notebook outside of the drag and drop UI. Please see the example notebook [here](https://github.com/rchynoweth/StreamingApp/blob/main/docs/Ryan_Test_Job.py). 
 
 ## Running the Application
 
