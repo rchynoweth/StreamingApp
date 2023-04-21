@@ -11,7 +11,8 @@ var lineStartX = 0;
 var lineStartY = 0;
 var dragging = false;
 
-// cloud drop down options
+
+// Add and listen to a cloud drop down box. This allows us to select a workspace that we want to deploy to
 function addDropdownEventListener() {
     document.addEventListener("DOMContentLoaded", function() {
     // Get a reference to the drop-down menu element
@@ -32,7 +33,6 @@ function addDropdownEventListener() {
 
 
 }
-
 // Call the function to attach the event listener to the drop-down menu
 addDropdownEventListener();
 
@@ -63,9 +63,11 @@ function endDrag(event) {
     }
 }
 
-
+//////
 // Function to add a new box to the content area
+//////
 function addBox(select_options) {
+    // add canvas content element
     var contentDiv = document.getElementById("content");
     var newBox = document.createElement("div");
     newBox.classList.add("box");
@@ -85,6 +87,7 @@ function addBox(select_options) {
 
         //////
         // init variable textboxes
+        //// For all the init variables in a class we need to display the text boxes for the selected class. 
         // remove old textboxes
         removeElements(newBox, "init-label-input-container");
         removeElements(newBox, "function-parameter-container");
@@ -101,7 +104,8 @@ function addBox(select_options) {
 
         ////
         // function dropdown list
-        ///
+        // Show the functions that are available for the class that was selected 
+        ////
         removeElements(newBox, "function-select");
 
         functionSelect = document.createElement("select");
@@ -118,6 +122,7 @@ function addBox(select_options) {
 
         ///// 
         // inner event listener of function select 
+        // We need to listen if the function selection changes and we need to display the appropriate function parameters as text boxes
         functionSelect.addEventListener("change", function () {
             // select the class that was chosen for the box 
 
@@ -126,6 +131,8 @@ function addBox(select_options) {
 
             // remove old textboxes
             removeElements(newBox, "function-parameter-container");
+
+            // for each parameter for the Class.function we need to display the options. 
             var selectedParameters = getSelectedObject(selectedClass.function_parameters, selectedFunctionValue);
             for (var k = 0; k < selectedParameters.function_parameters.length; k++) {
                 var label = selectedParameters.function_parameters[k];
@@ -155,6 +162,7 @@ function addBox(select_options) {
     contentDiv.appendChild(newBox);
 } // function
 
+// Create a text box for the init variables 
 function addTextBox(label) {
     var div = document.createElement("div");
     div.classList.add("init-label-input-container");
@@ -171,6 +179,7 @@ function addTextBox(label) {
     return div;
 }
 
+// Function to execute when the execute_pipeline button is clicked 
 function createPipeline() {
 
     var data = getPipelineData()
@@ -186,6 +195,7 @@ function createPipeline() {
     });
 }
 
+// function to execute when user clicks the update pipeline button
 function updatePipeline() {
     var data = getPipelineData()
     console.log(data)
@@ -200,6 +210,7 @@ function updatePipeline() {
     });
 }
 
+// function to execute when user clicks the delete pipeline button
 function deletePipeline() {
     var data = getPipelineData()
     console.log(data)
@@ -214,6 +225,7 @@ function deletePipeline() {
     });
 }
 
+// function to execute when user clicks the start pipeline button
 function startPipeline() {
     var data = getPipelineData()
     console.log(data)
@@ -228,11 +240,13 @@ function startPipeline() {
     });
 }
 
+// Whenever a button is clicked we need to gather all the data from the form fields. 
 function getPipelineData() {
     // gathers all the inputted information from the boxes and left panel
     var boxes = document.querySelectorAll(".box");
     var data = [];
 
+    // For each box collect the init parameters and function parameters and add it to the list
     boxes.forEach(function (box) {
         var boxData = {
             class: box.querySelector(".class").value,
@@ -259,9 +273,11 @@ function getPipelineData() {
         data.push(boxData);
     });
 
+    // collect the text box information on the left panel. 
     var textBoxes = document.querySelectorAll('.left-panel input[type="text"]');
     data.push(textBoxes)
 
+    // format the json data for the backend 
     json_data = {
         'job_name': data[data.length - 1][0].value,
         'target_database': data[data.length - 1][1].value,
@@ -276,6 +292,7 @@ function getPipelineData() {
     return json_data;
 }
 
+// allows us to parse the data easier 
 function getSelectedObject(selectedOptions, selectedOption) {
     for (var i = 0; i < selectedOptions.length; i++) {
         if (selectedOptions[i].name == selectedOption) {
@@ -284,6 +301,7 @@ function getSelectedObject(selectedOptions, selectedOption) {
     }
 }
 
+// Helps us select which class we chose for a box
 function createSelect(options, className) {
     const select = document.createElement("select");
     select.name = className;
@@ -300,7 +318,7 @@ function createSelect(options, className) {
     return select;
 }
 
-
+// removes the old text boxes when a user changes the class/function 
 function removeElements(parent, className) {
     const oldElements = parent.querySelectorAll(`.${className}`);
     for (const elem of oldElements) {

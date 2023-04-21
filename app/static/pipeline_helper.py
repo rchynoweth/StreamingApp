@@ -123,3 +123,52 @@ from dlt_platform.transforms.sql_transform import SQLTransform
         with open(file_path, 'w') as file:
             json.dump(data, file)
 
+
+    def get_function_parameters(self, pyclass):
+        """ Function to get parameters. See example return structure. 
+            # [
+            #     {
+            #     'name': '', 
+            #     'function_parameters': []
+            #     },
+            #     {
+            #     'name': '', 
+            #     'function_parameters': []
+            #     }
+            # ]
+        """
+        function_parameters = [{'name': 'Select a Function', 'function_parameters': []}]
+        for i in [i for i in dir(pyclass) if '__' not in i]:
+            # for each function in the class
+            # i is the function name
+            # params is the list of parameters for the function
+            params = [p for p in list(inspect.signature(getattr(pyclass, i)).parameters.keys()) if p not in ('self')]
+            d = {'name': i, 'function_parameters': params}
+            function_parameters.append(d)
+        return function_parameters
+
+
+    def generate_box_html(self, box_id, options):
+        options_html = ""
+        for option in options:
+            options_html += f"<option value='{option}'>{option}</option>"
+        
+        box_html = "<div id="+box_id+"' class='box'><div class='box-header'>"+box_id+" </div> <div class='box-content'><select>"+options_html+"</select></div></div>"
+        return box_html
+
+    def generate_lists(self, pyclass):
+        function_options = ['Select a Function'] + [i for i in dir(pyclass) if '__' not in i]
+        init_vars = list(inspect.signature(pyclass.__init__).parameters)
+        init_vars.remove('self') if 'self' in init_vars else None
+        init_vars.remove('args') if 'args' in init_vars else None
+        init_vars.remove('kwargs') if 'kwargs' in init_vars else None
+
+        func_parameters = self.get_function_parameters(pyclass)
+
+        # I can reduce the amount of data I am storing with the function stuff
+        return {
+            'name': pyclass.__name__ ,
+            'init_variables': init_vars,
+            'function_options': function_options,
+            'function_parameters': func_parameters
+        }
